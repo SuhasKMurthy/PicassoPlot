@@ -55,10 +55,11 @@ def plot(df, labels):
 
     num_distinct_plans = df['plan_id'].nunique()
     # create a list of colors based on the number of distinct plans
-    cols = cividis(num_distinct_plans)
+    # cols = cividis(num_distinct_plans)
+    cols = np.random.rand ( num_distinct_plans, 3)
     # populate other columns in the dataframe based on this. these are useful plot variables
     df['color'] = df.apply(lambda row: cols[row.plan_id], axis=1)
-    df['coverage'] = df.apply(lambda row: "{:.2f}".format((plan_sizes[row.plan_id] * 100) / len(df.index)), axis=1)
+    #df['coverage'] = df.apply(lambda row: "{:.2f}".format((plan_sizes[row.plan_id] * 100) / len(df.index)), axis=1)
 
     grid_size = math.sqrt(len(df.index))
 
@@ -76,12 +77,21 @@ def plot(df, labels):
         rect = patches.Rectangle((int(row['foo']), int(row['bar'])), 1, 1, edgecolor='r', fc=row['color'])
         ax.add_patch(rect)
 
+    id_cov = []
+    for i in range(num_distinct_plans):
+	id_cov.append([i, "{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
+    
+    id_cov_sorted = sorted(id_cov, key = lambda x:x[1], reverse=True)
+    
     legend_it = []
-    for col in cols:
-        df_temp = df[df['color'] == col]
-        coverage = df_temp['coverage'].iloc[0]
-        leg_item = Patch(facecolor=col, edgecolor='r', label=str(coverage))
-        legend_it.append(leg_item)
+    for pid, coverage in id_cov_sorted:
+	leg_item = Patch(facecolor=cols[pid], edgecolor='r', label=str(coverage))
+	legend_it.append(leg_item)
+    #for col in cols:
+    #    df_temp = df[df['color'] == col]
+    #    coverage = df_temp['coverage'].iloc[0]
+    #    leg_item = Patch(facecolor=col, edgecolor='r', label=str(coverage))
+    #    legend_it.append(leg_item)
 
     ax.legend(handles=legend_it, bbox_to_anchor=(1, 0.5), loc='center left')
 
