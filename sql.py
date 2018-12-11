@@ -28,7 +28,7 @@ def get_equal_height_histogram_query(column, table):
 
 dict_tpch_7 = {'query': tpch_7_query,
                'partition_queries': [('c_custkey', 'customer'), ('o_orderkey', 'orders')],
-               'base_relations': ('ORDERS', 'CUSTOMER')}
+               'base_relations': ('CUSTOMER', 'ORDERS')}
 
 tpch_8_query = 'SELECT o_year, sum(case when nation = \'BRAZIL\' then volume else 0 end) / sum(volume) as mkt_share ' \
                'FROM ( SELECT extract(year from o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, n2.n_name as nation ' \
@@ -49,7 +49,7 @@ dict_tpch_8 = {'query': tpch_8_query,
 tpch_9_query = 'select nation, o_year, sum(amount) as sum_profit from (select n_name as nation, ' \
                'extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount ' \
                'from part, supplier, lineitem, partsupp, orders, nation ' \
-               'where s_suppkey < :foo and ps_partkey < :bar and s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and p_partkey = l_partkey' \
+               'where s_suppkey < :foo and ps_partkey < :bar and s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and p_partkey = l_partkey ' \
 		'and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like \'%yellow%\') as profit ' \
                 'group by nation, o_year ' \
                 'order by nation, o_year desc;'
@@ -58,7 +58,7 @@ tpch_9_query = 'select nation, o_year, sum(amount) as sum_profit from (select n_
 
 dict_tpch_9 = {'query': tpch_9_query,
                'partition_queries': [('s_suppkey', 'supplier'), ('ps_partkey', 'partsupp')],
-               'base_relations': ('SUPPLIER', 'PARTSUPP')}
+               'base_relations': ('PARTSUPP', 'SUPPLIER')}
 
 USER_NAME = 'skeshavamurt_645f18'
 PASSWORD = 'b7549996ce'

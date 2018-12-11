@@ -79,14 +79,14 @@ def plot(df, labels):
 
     id_cov = []
     for i in range(num_distinct_plans):
-	id_cov.append([i, "{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
+        id_cov.append([i, "{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
     
     id_cov_sorted = sorted(id_cov, key = lambda x:x[1], reverse=True)
     
     legend_it = []
     for pid, coverage in id_cov_sorted:
-	leg_item = Patch(facecolor=cols[pid], edgecolor='r', label=str(coverage))
-	legend_it.append(leg_item)
+        leg_item = Patch(facecolor=cols[pid], edgecolor='r', label=str(coverage))
+        legend_it.append(leg_item)
     #for col in cols:
     #    df_temp = df[df['color'] == col]
     #    coverage = df_temp['coverage'].iloc[0]
@@ -112,6 +112,6 @@ def plot(df, labels):
     y = np.arange(1, int(grid_size)+1)
     X,Y = np.meshgrid(x,y)
     z = df['cost'].values.reshape((int(grid_size),int(grid_size)))
-    ax2.plot_surface(Y,X,z,rstride=1, cstride=1, cmap=cm.coolwarm)
+    ax2.plot_surface(X,Y,z,rstride=1, cstride=1, cmap=cm.coolwarm)
 
     plt.show()

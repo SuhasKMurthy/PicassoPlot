@@ -5,13 +5,13 @@ import pandas as pd
 import plot as plt
 
 GRID_SIZE = 30
-TPCH_QUERY = '8'
+TPCH_QUERY = '9'
 #TPCH_QUERY = '7'
 
 columns = ['foo', 'bar', 'plan', 'cost', 'plan_id', 'color', 'coverage']
 
 db = Sql(TPCH_QUERY, (GRID_SIZE,GRID_SIZE))
-print "getting parition"
+print("Getting partition")
 p1, p2 = db.get_partitions()
 
 plans = []
@@ -21,7 +21,7 @@ rows_list = []
 for s in p1:
     i += 1
     j = 0
-    print "p1 bin", i
+    print("p1 bin", i)
     for l in p2:
         j += 1
         dict_tpch_params = {'foo': s, 'bar': l}
