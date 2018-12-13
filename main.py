@@ -37,8 +37,8 @@ for s in p1:
         for result in results:
             #print(result)
             #print(result[0][0]['Plan'])
-	    plan = str(result[0][0]['Plan']).replace(str(s),"").replace(str(l),"")
-	    #print(plan)
+            plan = str(result[0][0]['Plan']).replace(str(s),"").replace(str(l),"")
+            #print(plan)
             plans.append(plan)
             dict1 = {'foo':i, 'bar':j, 'plan':plan, 'plan_raw': result[0][0]['Plan']}
             dict_row.update(dict1)

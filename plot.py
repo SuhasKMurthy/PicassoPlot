@@ -59,8 +59,8 @@ def plot(df, labels, plan_file_prefix):
     num_distinct_plans = df['plan_id'].nunique()
     unique_plan_dict = {}
     for index,row in df.iterrows():
-	if row.plan_id not in unique_plan_dict:
-	    unique_plan_dict[row.plan_id] = row.plan_raw
+        if row.plan_id not in unique_plan_dict:
+            unique_plan_dict[row.plan_id] = row.plan_raw
     
     # create a list of colors based on the number of distinct plans
     # cols = cividis(num_distinct_plans)
@@ -94,13 +94,13 @@ def plot(df, labels, plan_file_prefix):
     
     legend_it = []
     for i, (pid, coverage, plan_raw) in enumerate(id_cov_sorted):
-	if i >= 25:
-	    break
+        if i >= 25:
+            break
         leg_item = Patch(facecolor=cols[pid], edgecolor='r', label="{:.2f}".format(coverage))
         legend_it.append(leg_item)
-	with open(plan_file_prefix+str(i)+'.josn','w') as f_out:
-	    #plan_json = json.loads(plan)
-	    json.dump(plan_raw,f_out,indent = 1)
+        with open(plan_file_prefix+str(i)+'.josn','w') as f_out:
+            #plan_json = json.loads(plan)
+            json.dump(plan_raw,f_out,indent = 1)
     #for col in cols:
     #    df_temp = df[df['color'] == col]
     #    coverage = df_temp['coverage'].iloc[0]

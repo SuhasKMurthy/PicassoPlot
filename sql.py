@@ -50,7 +50,7 @@ tpch_9_query = 'select nation, o_year, sum(amount) as sum_profit from (select n_
                'extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount ' \
                'from part, supplier, lineitem, partsupp, orders, nation ' \
                'where s_suppkey < :foo and ps_partkey < :bar and s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and p_partkey = l_partkey ' \
-		'and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like \'%yellow%\') as profit ' \
+               'and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like \'%yellow%\') as profit ' \
                 'group by nation, o_year ' \
                 'order by nation, o_year desc;'
                
@@ -77,7 +77,6 @@ class Sql:
         self.engine = create_engine(DB_CONNECTION_STRING )
         self.query = dict_tpch[tpch_query]
         self.partition1, self.partition2 = query_grid_size
-	#self.DATABASE = DATABASE
 
     # this method is used to get partitions related to equiheight histograms for selectivity in the plans
     def get_partitions(self):
