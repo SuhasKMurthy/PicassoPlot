@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy import text
 
-#NATION1 = "UNITED STATES"
-#NATION2 = "CHINA"
-NATION1 = "FRANCE"
-NATION2 = "GERMANY"
+NATION1 = "UNITED STATES"
+NATION2 = "CHINA"
+#NATION1 = "FRANCE"
+#NATION2 = "GERMANY"
 
 
 tpch_7_query = 'SELECT supp_nation, cust_nation, l_year, sum(volume) as revenue ' \
@@ -27,8 +27,8 @@ def get_equal_height_histogram_query(column, table):
 
 
 dict_tpch_7 = {'query': tpch_7_query,
-               'partition_queries': [('c_custkey', 'customer'), ('o_orderkey', 'orders')],
-               'base_relations': ('CUSTOMER', 'ORDERS')}
+               'partition_queries': [('o_orderkey', 'orders'), ('c_custkey', 'customer')],
+               'base_relations': ('ORDERS', 'CUSTOMER')}
 
 tpch_8_query = 'SELECT o_year, sum(case when nation = \'BRAZIL\' then volume else 0 end) / sum(volume) as mkt_share ' \
                'FROM ( SELECT extract(year from o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, n2.n_name as nation ' \
@@ -58,7 +58,7 @@ tpch_9_query = 'select nation, o_year, sum(amount) as sum_profit from (select n_
 
 dict_tpch_9 = {'query': tpch_9_query,
                'partition_queries': [('s_suppkey', 'supplier'), ('ps_partkey', 'partsupp')],
-               'base_relations': ('PARTSUPP', 'SUPPLIER')}
+               'base_relations': ('SUPPLIER', 'PARTSUPP')}
 
 #USER_NAME = 'skeshavamurt_645f18'
 USER_NAME = 'gbiss'

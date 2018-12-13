@@ -59,8 +59,11 @@ def plot(df, labels, plan_file_prefix):
     num_distinct_plans = df['plan_id'].nunique()
     unique_plan_dict = {}
     for index,row in df.iterrows():
-        if row.plan_id not in unique_plan_dict:
-            unique_plan_dict[row.plan_id] = row.plan_raw
+        x_axis_val = row.foo
+        y_axis_val = row.bar
+        if row.plan_id not in unique_plan_dict or (unique_plan_dict[row.plan_id][1]+unique_plan_dict[row.plan_id][2] > x_axis_val+y_axis_val):
+            unique_plan_dict[row.plan_id] = [row.plan_raw, x_axis_val, y_axis_val]
+            #unique_plan_dict[row.plan_id] = [row.plan, x_axis_val, y_axis_val]
     
     # create a list of colors based on the number of distinct plans
     # cols = cividis(num_distinct_plans)
@@ -88,18 +91,18 @@ def plot(df, labels, plan_file_prefix):
     id_cov = []
     for i in range(num_distinct_plans):
         #id_cov.append([i, "{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
-        id_cov.append([i, plan_sizes[i]*100.0/len(df.index), unique_plan_dict[i] ]) #"{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
+        id_cov.append([i, plan_sizes[i]*100.0/len(df.index), unique_plan_dict[i][0], unique_plan_dict[i][1], unique_plan_dict[i][2] ]) #"{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
     
     id_cov_sorted = sorted(id_cov, key = lambda x:x[1], reverse=True)
     
     legend_it = []
-    for i, (pid, coverage, plan_raw) in enumerate(id_cov_sorted):
-        if i >= 25:
-            break
-        leg_item = Patch(facecolor=cols[pid], edgecolor='r', label="{:.2f}".format(coverage))
-        legend_it.append(leg_item)
-        with open(plan_file_prefix+str(i)+'.josn','w') as f_out:
-            #plan_json = json.loads(plan)
+    for i, (pid, coverage, plan_raw, x_val, y_val) in enumerate(id_cov_sorted):
+        if i < 25:
+            leg_item = Patch(facecolor=cols[pid], edgecolor='r', label="{:.2f}".format(coverage))
+            legend_it.append(leg_item)
+        with open(plan_file_prefix+str(i)+'_x_'+str(x_val)+'_y_'+str(y_val)+'.json','w') as f_out:
+            #plan_json = json.loads(plan_raw)
+            #json.dump(plan_json,f_out,indent = 1)
             json.dump(plan_raw,f_out,indent = 1)
     #for col in cols:
     #    df_temp = df[df['color'] == col]

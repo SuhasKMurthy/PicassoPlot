@@ -1,4 +1,4 @@
-from sql import Sql, tpch_8_query, DATABASE
+from sql import Sql, DATABASE
 from collections import Counter
 
 import pandas as pd
@@ -7,8 +7,8 @@ import plot as plt
 #GRID_SIZE = 30
 GRID_SIZE = 100
 #TPCH_QUERY = '9'
-TPCH_QUERY = '8'
-#TPCH_QUERY = '7'
+#TPCH_QUERY = '8'
+TPCH_QUERY = '7'
 
 columns = ['foo', 'bar', 'plan', 'cost', 'plan_id', 'color', 'coverage']
 plan_file_prefix = './plan_log/q'+str(TPCH_QUERY)+'_g'+str(GRID_SIZE)+'_'+DATABASE+'_i_'
@@ -36,10 +36,14 @@ for s in p1:
         query = 'EXPLAIN (FORMAT JSON, COSTS FALSE ) ' + tpch_query
         results = db.execute_query(query, dict_tpch_params)
         dict_row = {}
+        part1, part2 = db.query['partition_queries']
+        replace_part1_prefix = part1[0]+" < "
+        replace_part2_prefix = part2[0]+" < "
         for result in results:
             #print(result)
             #print(result[0][0]['Plan'])
-            plan = str(result[0][0]['Plan']).replace(str(s),"").replace(str(l),"").replace(str(int(s)),"").replace(str(int(l)),"")
+
+            plan = str(result[0][0]['Plan']).replace("'","").replace(replace_part1_prefix+str(s),"").replace(replace_part2_prefix+str(l),"").replace(replace_part1_prefix+str(int(s)),"").replace(replace_part2_prefix+str(int(l)),"")
             #print(plan)
             plans.append(plan)
             dict1 = {'foo':i, 'bar':j, 'plan':plan, 'plan_raw': result[0][0]['Plan']}
