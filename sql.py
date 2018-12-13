@@ -60,10 +60,12 @@ dict_tpch_9 = {'query': tpch_9_query,
                'partition_queries': [('s_suppkey', 'supplier'), ('ps_partkey', 'partsupp')],
                'base_relations': ('PARTSUPP', 'SUPPLIER')}
 
-USER_NAME = 'skeshavamurt_645f18'
-PASSWORD = 'b7549996ce'
-HOST = 'cs645-community-f18.cxbepp9iqfon.us-east-1.rds.amazonaws.com:5432'
-DATABASE = 'tpch_sf1'
+#USER_NAME = 'skeshavamurt_645f18'
+USER_NAME = 'gbiss'
+PASSWORD = '1qaz@WSX'
+HOST = 'localhost'
+DATABASE = 'tpch_sf1_v1'
+#DATABASE = 'tpch_sf10'
 DB_CONNECTION_STRING = 'postgresql://{}:{}@{}/{}'.format(USER_NAME,PASSWORD,HOST,DATABASE)
 
 dict_tpch = {'7': dict_tpch_7, '8': dict_tpch_8, '9': dict_tpch_9}
@@ -75,7 +77,7 @@ class Sql:
         self.engine = create_engine(DB_CONNECTION_STRING )
         self.query = dict_tpch[tpch_query]
         self.partition1, self.partition2 = query_grid_size
-
+	#self.DATABASE = DATABASE
 
     # this method is used to get partitions related to equiheight histograms for selectivity in the plans
     def get_partitions(self):

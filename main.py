@@ -1,14 +1,17 @@
-from sql import Sql, tpch_8_query
+from sql import Sql, tpch_8_query, DATABASE
 from collections import Counter
 
 import pandas as pd
 import plot as plt
 
 GRID_SIZE = 30
-TPCH_QUERY = '9'
+#GRID_SIZE = 100
+#TPCH_QUERY = '9'
+TPCH_QUERY = '8'
 #TPCH_QUERY = '7'
 
 columns = ['foo', 'bar', 'plan', 'cost', 'plan_id', 'color', 'coverage']
+plan_file_prefix = './plan_log/q'+str(TPCH_QUERY)+'_g'+str(GRID_SIZE)+'_'+DATABASE+'_i_'
 
 db = Sql(TPCH_QUERY, (GRID_SIZE,GRID_SIZE))
 print("Getting partition")
@@ -32,9 +35,12 @@ for s in p1:
         results = db.execute_query(query, dict_tpch_params)
         dict_row = {}
         for result in results:
-            plan = str(result)
+            #print(result)
+            #print(result[0][0]['Plan'])
+	    plan = str(result[0][0]['Plan']).replace(str(s),"").replace(str(l),"")
+	    #print(plan)
             plans.append(plan)
-            dict1 = {'foo':i, 'bar':j, 'plan':plan}
+            dict1 = {'foo':i, 'bar':j, 'plan':plan, 'plan_raw': result[0][0]['Plan']}
             dict_row.update(dict1)
 
         # Get plans with COST information
@@ -48,5 +54,5 @@ for s in p1:
 
 df = pd.DataFrame(rows_list)
 
-plt.plot(df, db.query['base_relations'])
+plt.plot(df, db.query['base_relations'], plan_file_prefix)
 

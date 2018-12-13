@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 import pandas as pd
 import numpy as np
-
+import json
 
 
 import math
@@ -46,14 +46,22 @@ import math
 #     output_file("plan_diagram.html", title="plan_diagram.py example")
 #     show(p)
 
-def plot(df, labels):
+def plot(df, labels, plan_file_prefix):
     x_label, y_label = labels
     # give each distinct plan an ID
     df['plan_id'] = df.groupby(['plan']).ngroup()
     # get the count associated with each plan ID
     plan_sizes = df.groupby(['plan']).size()
 
+    #unique_plan = df.groupby(['plan']).apply(lambda x: x.unique())
+    #unique_plan = df['plan'].unique()
+    #num_distinct_plans = len(unique_plan)
     num_distinct_plans = df['plan_id'].nunique()
+    unique_plan_dict = {}
+    for index,row in df.iterrows():
+	if row.plan_id not in unique_plan_dict:
+	    unique_plan_dict[row.plan_id] = row.plan_raw
+    
     # create a list of colors based on the number of distinct plans
     # cols = cividis(num_distinct_plans)
     cols = np.random.rand ( num_distinct_plans, 3)
@@ -71,7 +79,7 @@ def plot(df, labels):
     ax.set_ylim([1, grid_size+1])
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
-    ax.set_title("Plan Diagram")
+    ax.set_title("Plan Diagram. Total number of plans: " + str(num_distinct_plans))
 
     for index, row in df.iterrows():
         rect = patches.Rectangle((int(row['foo']), int(row['bar'])), 1, 1, edgecolor='r', fc=row['color'])
@@ -80,14 +88,19 @@ def plot(df, labels):
     id_cov = []
     for i in range(num_distinct_plans):
         #id_cov.append([i, "{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
-        id_cov.append([i, plan_sizes[i]*100.0/len(df.index) ]) #"{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
+        id_cov.append([i, plan_sizes[i]*100.0/len(df.index), unique_plan_dict[i] ]) #"{:.2f}".format( plan_sizes[i]*100.0/len(df.index) ) ])
     
     id_cov_sorted = sorted(id_cov, key = lambda x:x[1], reverse=True)
     
     legend_it = []
-    for pid, coverage in id_cov_sorted:
+    for i, (pid, coverage, plan_raw) in enumerate(id_cov_sorted):
+	if i >= 25:
+	    break
         leg_item = Patch(facecolor=cols[pid], edgecolor='r', label="{:.2f}".format(coverage))
         legend_it.append(leg_item)
+	with open(plan_file_prefix+str(i)+'.josn','w') as f_out:
+	    #plan_json = json.loads(plan)
+	    json.dump(plan_raw,f_out,indent = 1)
     #for col in cols:
     #    df_temp = df[df['color'] == col]
     #    coverage = df_temp['coverage'].iloc[0]
@@ -95,6 +108,7 @@ def plot(df, labels):
     #    legend_it.append(leg_item)
 
     ax.legend(handles=legend_it, bbox_to_anchor=(1, 0.5), loc='center left')
+    #ax.set_title("Total number of plans: ", len(num_distinct_plans))
 
     ax2 = fig.add_subplot(1, 2, 2, projection='3d')
     max_cost = df['cost'].max()
