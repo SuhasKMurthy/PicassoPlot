@@ -4,8 +4,8 @@ from collections import Counter
 import pandas as pd
 import plot as plt
 
-GRID_SIZE = 30
-#GRID_SIZE = 100
+#GRID_SIZE = 30
+GRID_SIZE = 100
 #TPCH_QUERY = '9'
 TPCH_QUERY = '8'
 #TPCH_QUERY = '7'
@@ -21,6 +21,8 @@ plans = []
 i = 0
 j = 0
 rows_list = []
+print p1
+print p2
 for s in p1:
     i += 1
     j = 0
@@ -37,7 +39,7 @@ for s in p1:
         for result in results:
             #print(result)
             #print(result[0][0]['Plan'])
-            plan = str(result[0][0]['Plan']).replace(str(s),"").replace(str(l),"")
+            plan = str(result[0][0]['Plan']).replace(str(s),"").replace(str(l),"").replace(str(int(s)),"").replace(str(int(l)),"")
             #print(plan)
             plans.append(plan)
             dict1 = {'foo':i, 'bar':j, 'plan':plan, 'plan_raw': result[0][0]['Plan']}

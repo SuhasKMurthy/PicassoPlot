@@ -64,8 +64,8 @@ dict_tpch_9 = {'query': tpch_9_query,
 USER_NAME = 'gbiss'
 PASSWORD = '1qaz@WSX'
 HOST = 'localhost'
-DATABASE = 'tpch_sf1_v1'
-#DATABASE = 'tpch_sf10'
+#DATABASE = 'tpch_sf1_v1'
+DATABASE = 'tpch_sf10'
 DB_CONNECTION_STRING = 'postgresql://{}:{}@{}/{}'.format(USER_NAME,PASSWORD,HOST,DATABASE)
 
 dict_tpch = {'7': dict_tpch_7, '8': dict_tpch_8, '9': dict_tpch_9}
