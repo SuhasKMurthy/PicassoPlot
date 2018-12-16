@@ -1,10 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy import text
 
-NATION1 = "UNITED STATES"
-NATION2 = "CHINA"
-#NATION1 = "FRANCE"
-#NATION2 = "GERMANY"
+#NATION1_q7 = "UNITED STATES"
+#NATION2_q7 = "CHINA"
+NATION1_q7 = "FRANCE"
+NATION2_q7 = "GERMANY"
+
+REGION_q8 = "AMERICA"
+NATION_q8 = "BRAZIL"
+#REGION_q8 = "ASIA"
+#NATION_q8 = "CHINA"
+TYPE_q8 = "ECONOMY ANODIZED STEEL"
+
+#COLOR_q9 = "yellow"
+COLOR_q9 = "green"
 
 
 tpch_7_query = 'SELECT supp_nation, cust_nation, l_year, sum(volume) as revenue ' \
@@ -13,7 +22,7 @@ tpch_7_query = 'SELECT supp_nation, cust_nation, l_year, sum(volume) as revenue 
                'FROM supplier, lineitem, orders, customer, nation n1, nation n2 ' \
                     'WHERE s_suppkey = l_suppkey and o_orderkey = l_orderkey and c_custkey = o_custkey and o_orderkey < :foo and c_custkey < :bar ' \
                             'and s_nationkey = n1.n_nationkey and c_nationkey = n2.n_nationkey and ( ' \
-                            '(n1.n_name = \''+NATION1+'\' and n2.n_name = \''+NATION2+'\') or (n1.n_name = \''+NATION2+'\' and n2.n_name = \''+NATION1+'\')) ' \
+                            '(n1.n_name = \''+NATION1_q7+'\' and n2.n_name = \''+NATION2_q7+'\') or (n1.n_name = \''+NATION2_q7+'\' and n2.n_name = \''+NATION1_q7+'\')) ' \
                             'and l_shipdate between date \'1992-01-01\' and date \'1999-12-31\') as shipping ' \
                'GROUP BY supp_nation, cust_nation, l_year ' \
                'ORDER BY supp_nation, cust_nation, l_year;'
@@ -30,14 +39,16 @@ dict_tpch_7 = {'query': tpch_7_query,
                'partition_queries': [('o_orderkey', 'orders'), ('c_custkey', 'customer')],
                'base_relations': ('ORDERS', 'CUSTOMER')}
 
-tpch_8_query = 'SELECT o_year, sum(case when nation = \'BRAZIL\' then volume else 0 end) / sum(volume) as mkt_share ' \
+ 
+
+tpch_8_query = 'SELECT o_year, sum(case when nation = \''+NATION_q8+'\' then volume else 0 end) / sum(volume) as mkt_share ' \
                'FROM ( SELECT extract(year from o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, n2.n_name as nation ' \
                'FROM part, supplier, lineitem, orders, customer, nation n1, nation n2, region ' \
                'WHERE s_acctbal < :foo and l_quantity < :bar and p_partkey = l_partkey and s_suppkey = l_suppkey ' \
                'and l_orderkey = o_orderkey and o_custkey = c_custkey and c_nationkey = n1.n_nationkey ' \
-               'and n1.n_regionkey = r_regionkey and r_name = \'AMERICA\' and s_nationkey = n2.n_nationkey ' \
+               'and n1.n_regionkey = r_regionkey and r_name = \''+REGION_q8+'\' and s_nationkey = n2.n_nationkey ' \
                'and o_orderdate between date \'1995-01-01\' and date \'1996-12-31\' ' \
-               'and p_type = \'ECONOMY ANODIZED STEEL\') as all_nations ' \
+               'and p_type = \''+TYPE_q8+'\') as all_nations ' \
                'group by o_year ' \
                'order by o_year;'
 
@@ -50,7 +61,7 @@ tpch_9_query = 'select nation, o_year, sum(amount) as sum_profit from (select n_
                'extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount ' \
                'from part, supplier, lineitem, partsupp, orders, nation ' \
                'where s_suppkey < :foo and ps_partkey < :bar and s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and p_partkey = l_partkey ' \
-               'and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like \'%yellow%\') as profit ' \
+               'and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like \'%'+COLOR_q9+'%\') as profit ' \
                 'group by nation, o_year ' \
                 'order by nation, o_year desc;'
                
@@ -64,8 +75,8 @@ dict_tpch_9 = {'query': tpch_9_query,
 USER_NAME = 'gbiss'
 PASSWORD = '1qaz@WSX'
 HOST = 'localhost'
-#DATABASE = 'tpch_sf1_v1'
-DATABASE = 'tpch_sf10'
+DATABASE = 'tpch_sf1_v1'
+#DATABASE = 'tpch_sf10'
 DB_CONNECTION_STRING = 'postgresql://{}:{}@{}/{}'.format(USER_NAME,PASSWORD,HOST,DATABASE)
 
 dict_tpch = {'7': dict_tpch_7, '8': dict_tpch_8, '9': dict_tpch_9}

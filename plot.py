@@ -109,8 +109,9 @@ def plot(df, labels, plan_file_prefix):
     #    coverage = df_temp['coverage'].iloc[0]
     #    leg_item = Patch(facecolor=col, edgecolor='r', label=str(coverage))
     #    legend_it.append(leg_item)
-
-    ax.legend(handles=legend_it, bbox_to_anchor=(1, 0.5), loc='center left')
+    if len(id_cov_sorted) > 25:
+        legend_it.append( Patch(facecolor=[1,1,1], edgecolor='r', label="...") )
+    ax.legend(handles=legend_it, bbox_to_anchor=(1, 0.5), loc='center left', prop={'size': 8})
     #ax.set_title("Total number of plans: ", len(num_distinct_plans))
 
     ax2 = fig.add_subplot(1, 2, 2, projection='3d')
